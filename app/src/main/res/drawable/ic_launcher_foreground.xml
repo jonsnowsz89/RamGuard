@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+
+    <!-- RAM chip pins (left & right) -->
+    <path android:fillColor="#3DDCFF"
+        android:pathData="M23,38h5v3h-5z M23,46h5v3h-5z M23,54h5v3h-5z M23,62h5v3h-5z
+                          M80,38h5v3h-5z M80,46h5v3h-5z M80,54h5v3h-5z M80,62h5v3h-5z" />
+
+    <!-- Shield body with cyan to green gradient -->
+    <path android:pathData="M54,24 L80,33 L80,54 C80,70 68,80 54,86 C40,80 28,70 28,54 L28,33 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="28" android:startY="24" android:endX="80" android:endY="86"
+                android:startColor="#3DDCFF" android:endColor="#2BE38A" />
+        </aapt:attr>
+    </path>
+
+    <!-- Inner dark plate for contrast -->
+    <path android:fillColor="#07121C"
+        android:pathData="M54,30 L74,37 L74,54 C74,66 65,74 54,79 C43,74 34,66 34,54 L34,37 Z" />
+
+    <!-- Lightning bolt -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M58,38 L44,58 L52,58 L49,72 L65,51 L56.5,51 Z" />
+</vector>
