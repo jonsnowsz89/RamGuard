@@ -7,7 +7,6 @@ import com.ramguard.app.CleanerApp
 import com.ramguard.app.data.CleanerEngine
 import com.ramguard.app.data.PowerMode
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 
 /**
  * Eco   : cancels non-essential notifications of non-whitelisted apps. Calls, alarms, navigation,

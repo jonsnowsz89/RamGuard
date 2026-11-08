@@ -45,33 +45,35 @@ class FirewallVpnService : VpnService() {
         return START_STICKY
     }
 
-    private suspend fun establish() = lock.withLock {
-        val targets = engine.firewallTargets()
-        // Not allowed to run: no targets, or VPN consent was never given / was revoked
-        if (targets.isEmpty() || VpnService.prepare(this) != null) {
-            teardown(); stopSelf(); return
-        }
-        val builder = Builder()
-            .setSession("RamGuard")
-            .addAddress("10.8.0.2", 32)
-            .addAddress("fd00:8::2", 128)
-            .addRoute("0.0.0.0", 0)      // everything from the selected apps goes into the TUN...
-            .addRoute("::", 0)
-            .setBlocking(true)
-        if (Build.VERSION.SDK_INT >= 29) builder.setMetered(false)
-        var added = 0
-        targets.forEach {
-            try { builder.addAllowedApplication(it); added++ } catch (_: PackageManager.NameNotFoundException) {}
-        }
-        if (added == 0) { teardown(); stopSelf(); return }   // never route ALL apps by accident
+    private suspend fun establish() {
+        lock.withLock {
+            val targets = engine.firewallTargets()
+            // Not allowed to run: no targets, or VPN consent was never given / was revoked
+            if (targets.isEmpty() || VpnService.prepare(this) != null) {
+                teardown(); stopSelf(); return@withLock
+            }
+            val builder = Builder()
+                .setSession("RamGuard")
+                .addAddress("10.8.0.2", 32)
+                .addAddress("fd00:8::2", 128)
+                .addRoute("0.0.0.0", 0)      // everything from the selected apps goes into the TUN...
+                .addRoute("::", 0)
+                .setBlocking(true)
+            if (Build.VERSION.SDK_INT >= 29) builder.setMetered(false)
+            var added = 0
+            targets.forEach {
+                try { builder.addAllowedApplication(it); added++ } catch (_: PackageManager.NameNotFoundException) {}
+            }
+            if (added == 0) { teardown(); stopSelf(); return@withLock }   // never route ALL apps by accident
 
-        val newTun = builder.establish() ?: return           // null = consent revoked meanwhile
-        val old = tun
-        tun = newTun
-        drain(newTun)                                        // ...where every packet is dropped
-        old?.close()                                         // closing the old fd ends its drain thread
-        blockedCount.value = added
-        _running.value = true
+            val newTun = builder.establish() ?: return@withLock           // null = consent revoked meanwhile
+            val old = tun
+            tun = newTun
+            drain(newTun)                                                 // ...where every packet is dropped
+            old?.close()                                                  // closing the old fd ends its drain thread
+            blockedCount.value = added
+            _running.value = true
+        }
     }
 
     /** Read and discard packets so the TUN queue never backs up. */

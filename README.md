@@ -24,3 +24,8 @@ Open the folder in Android Studio (Hedgehog+), let it sync (it generates the Gra
 
 ## Icon
 Vector adaptive icon is already included. For a Play Store PNG: Android Studio > right-click res > New > Image Asset > use `ic_launcher_foreground`.
+
+## Getting the APK
+**A) Android Studio:** open the folder, wait for sync, then Build > Build APK(s). File: `app/build/outputs/apk/debug/app-debug.apk`.
+**B) No installation (GitHub Actions):** upload this folder to a new GitHub repo (branch `main`), open the Actions tab > "Build APK" > Run workflow, then download `RamGuard-debug-apk` from the finished run (unzip it to get the .apk).
+Install on the phone and allow "Install unknown apps" for the app you opened it with.

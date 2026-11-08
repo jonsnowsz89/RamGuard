@@ -67,11 +67,15 @@ class CleanerService : Service() {
     }
 
     private suspend fun syncFirewall() {
-        val vpn = Intent(this, FirewallVpnService::class.java)
+        val need = engine.firewallTargets().isNotEmpty()
         runCatching {
-            if (engine.firewallTargets().isNotEmpty()) startService(vpn)
-            else if (FirewallVpnService.running.value) startService(vpn.setAction(FirewallVpnService.ACTION_STOP))
+            if (need) {
+                startService(Intent(this, FirewallVpnService::class.java))
+            } else if (FirewallVpnService.running.value) {
+                startService(Intent(this, FirewallVpnService::class.java).setAction(FirewallVpnService.ACTION_STOP))
+            }
         }
+        Unit
     }
 
     private fun onScreenOff() {
