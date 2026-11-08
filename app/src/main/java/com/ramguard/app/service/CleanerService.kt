@@ -73,9 +73,10 @@ class CleanerService : Service() {
                 startService(Intent(this, FirewallVpnService::class.java))
             } else if (FirewallVpnService.running.value) {
                 startService(Intent(this, FirewallVpnService::class.java).setAction(FirewallVpnService.ACTION_STOP))
+            } else {
+                // no-op: nothing to start or stop
             }
         }
-        Unit
     }
 
     private fun onScreenOff() {
